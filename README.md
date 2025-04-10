@@ -1,0 +1,20 @@
+# Pleasure Craft Courtesy Check App
+Small application for logging and correctly identifying boat safety equipment required on Canadian Pleasure Craft Vessels.  
+
+Application requirements:
+- log static info on the vessel
+- produce checklist of equipment need on board dependent on the size of the vessel
+- save the outcome of the inspection: eg. pass, requirements not met, recomendations, etc.
+
+## Data Sources
+The criteria for passing or failing an inspection is ultimately provided by Canada Coast Guard regulations - tp_511e
+
+### Python
+The program is written in python using the streamlit app.
+
+### Database
+Information about vessel is stored in postgres database.
+
+### Serving
+The application uses Render.com as the web service provider.
+
