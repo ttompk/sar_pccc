@@ -77,12 +77,33 @@ def add_inspection_info_to_db(boat_id, inspector_name, pass_fail, notes):
         result = session.execute(query, {
             "boat_id": boat_id,
             "inspector_name": inspector_name,
-            "status": pass_fail,
+            "pass_fail": pass_fail,
             "notes": notes
         })
         inspection_id = result.scalar()  # Retrieve the returned ID
         session.commit()
         return inspection_id
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
+
+
+def add_safety_device(inspection_id, device_name, device_desr, is_present):
+    session = get_session()
+    try:
+        query = text("""
+            INSERT INTO inspection_devices (inspection_id, device_name, device_descr, is_present)
+            VALUES (:inspection_id, :device_name, :device_descr, :is_present);
+        """)
+        session.execute(query, {
+            "inspection_id": inspection_id,
+            "device_name": device_name,
+            "device_descr": device_desr,
+            "is_present": is_present
+        })
+        session.commit()
     except Exception as e:
         session.rollback()
         raise e
