@@ -46,29 +46,49 @@ def add_to_boat_table(boat_name, boat_type, motor, boat_length, boat_license_sel
     finally:
         session.close()
 
-def add_optional_equipment_to_boat(boat_id, eq):
+def add_optional_equipment_to_boat(boat_id, optional_eq):
     session = get_session()
     try:
-        # Retrieve the equipment_id based on the equipment
-        equipment_id = return_equip_id(eq)
-        if equipment_id is None:
-            raise ValueError(f"No equipment ID found for boat type: {eq}")
-
-        query = text("""
-            INSERT INTO boat_optional_equipment (boat_id, equipment_id)
-            VALUES (:boat_id, :equipment_id);
-        """)
-        session.execute(query, {"boat_id": boat_id, "equipment_id": equipment_id})
-        session.commit()
+        # each piece of eqiupment is associated with a id in teh database
+        for equipment_id, value in optional_eq.items():
+            if equipment_id is None:
+                raise ValueError(f"No equipment ID found for boat type: {optional_eq}")
+            
+            query = text("""
+                INSERT INTO boat_optional_equipment (boat_id, equipment_id, equipment_status)
+                VALUES (:boat_id, :equipment_id, :value);
+            """)
+            session.execute(query, {"boat_id": boat_id, "equipment_id": equipment_id, "value": value})
+            session.commit()
     except Exception as e:
         session.rollback()
         raise e
     finally:
         session.close()
 
-def return_equip_id():
-    # optional equipment map to these ids in the database
-    equipment_id_dict = {1: 'radio_select', 2: 'epirb', 3: 'plb', 4: 'ais', 5: 'charts', 6: 'chart_date'}
+def add_inspection_info_to_db(boat_id, inspector_name, pass_fail, notes):
+    session = get_session()
+    try:
+        query = text("""
+            INSERT INTO inspections (boat_id, inspector_name, status, notes)
+            VALUES (:boat_id, :inspector_name, :pass_fail, :notes)
+            RETURNING id;
+        """)
+        result = session.execute(query, {
+            "boat_id": boat_id,
+            "inspector_name": inspector_name,
+            "status": pass_fail,
+            "notes": notes
+        })
+        inspection_id = result.scalar()  # Retrieve the returned ID
+        session.commit()
+        return inspection_id
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
+
 
 
 # add safety devices
