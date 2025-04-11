@@ -1,5 +1,5 @@
 import streamlit as st
-#from database import save_inspection_data
+import database
 import utils 
 from helper import reduce_flares
 
@@ -37,16 +37,18 @@ def main():
             for key in list(st.session_state.keys()):
                 if key.startswith("device_"):  # Assuming keys for devices start with "device_"
                     del st.session_state[key]
+
+
     
     # Top screen that never moves
     st.title("Canadian Lifeboat Institution")
     st.header("Boat Inspection App")
     st.write("Organizational number 1700")
     
+    tab1, tab2, tab3= st.tabs(["Basic Info", "Optional Equipment", "Required Safety Devices"])
 
-    tab1, tab2 = st.tabs(["Basic Info", "Required Safety Devices"])
 
-    # User input of boat details
+    # BOAT DETAILS
     with tab1:
         st.header("Basic Vessel Info")
         
@@ -54,40 +56,38 @@ def main():
         boat_type = st.radio("Boat Type:", ["Sailboat", "Powerboat", "Personal Watercraft"], key="boat_type", index=0)
         if boat_type == "Sailboat":
             motor = st.toggle("Is there a motor?", value=True, key="motor")
-        else:
-            motor = "No"
         
         #if boat_type != "Personal Watercraft":
         boat_length = st.number_input("Enter Boat Length (in feet):", min_value=1, key="boat_length")
         boat_license_select = st.selectbox("Is boat licensed/registered? : ", options=["None", "Licensed", "Registered"], key="boat_license_select")
         if boat_license_select != "None":
-            st.date_input("Date boat last licensed/registered: ", value=None, key="boat_license_date")
-        radio_select = st.toggle(label="VHF radio?: ", value=False, key="radio_select") # affects the number of flares required
-        epirb_select = st.toggle("EPIRB?", value=False, key="epirb_select") # affects the number of flares required
+            boat_license_date = st.date_input("Date boat last licensed/registered: ", value=None, key="boat_license_date")
 
+
+    # OPTIONAL SAFETY EQUIPMENT
+    with tab2:
+        
         # User input of Operator Info
         st.subheader("Operator Info")
         competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate"], key="competency_select")
+        
+        # Optional Equipment
+        st.subheader("Optional Equipment")
+        radio_select = st.toggle(label="VHF radio?: ", value=False, key="radio_select") # affects the number of flares required
+        epirb_select = st.toggle("EPIRB?", value=False, key="epirb_select") # affects the number of flares required
         plb_select = st.toggle("Operator wears a personal locator beacon? ", value=False, key="plb_select") # affects the number of flares required
+        ais_select = st.toggle("AIS onboard?", value=False, key="ais_select")
 
 
-        # Navigation Equipment (optional)
-        st.subheader("Navigation Equipment (optional)")
-        charts_select = st.radio("Charts present? ", ["N/A", "None", "Paper", "Electronic"], key="charts_select")  
+        #st.subheader("Navigation Equipment (optional)")
+        charts_select = st.radio("Charts present? ", ["None", "Paper", "Electronic"], key="charts_select")  
         if charts_select in ["Paper","Electronic"]:
             # charts up to date? 
             charts_date_select = st.toggle("Charts up to date?", value=False, key="charts_date_select")
-        ais_select = st.radio("AIS onboard?", ["N/A", "Yes", "No"], key="ais_select")
+        
 
-        col01, col02 = st.columns([3,1])  # Adjust the ratio for spacing
-        with col02: 
-            if st.button("Clear Form", key='"clear_form"'):
-                reset_state_values()
-
-
-    
-    # Diplay actual safety devices and checkboxes
-    with tab2:
+    # Diplay required safety devices and checkboxes
+    with tab3:
         # is there a flare reduction?
         reduce = reduce_flares(radio_select, plb_select, epirb_select)
         if reduce:
@@ -123,6 +123,8 @@ def main():
                     for key, device in required_devices.items():
                         st.checkbox(device, key=key)
 
+
+
         # Radio buttons for confirming presence of safety devices
         st.header("File Report")
         presence_confirmation = st.radio("Are all required safety devices present?", ("Yes, boat passes courtesy inspection", "No"))
@@ -133,13 +135,23 @@ def main():
         col1, col2, col3 = st.columns(3)  # Create three columns
         with col1:
             if st.button("File Report", key="file_report"):
-                pass
+                # add boat and retrieve the unique boat id from the database
+                boat_id = database.add_to_boat_table(boat_name, boat_type, motor, boat_length, boat_license_select, boat_license_date)
+
+                # add optional equipment to the boat
+                database.add_optional_equipment_to_boat(boat_id, equipment_id)
+
         #    save_inspection_data(boat_name, boat_type, boat_length, required_devices, presence_confirmation, notes, "Passed")
         #    st.success("Inspection Passed!")
         
         # if raft has a motor 10hp needs a license
         # license lasts 10 years, registration lasts 3 years
 
+
+    col01, col02 = st.columns([3,1])  # Adjust the ratio for spacing
+    with col02: 
+        if st.button("Clear Form", key='"clear_form"'):
+            reset_state_values()
 
 if __name__ == "__main__":
     main()
