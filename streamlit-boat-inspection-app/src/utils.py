@@ -1,31 +1,9 @@
-
 import helper
-
-def get_required_safety_devices(boat_type, boat_length):
-    safety_devices = {
-        'sailboat': ['Life jackets', 'Flares', 'Fire extinguisher'],
-        'motorboat': ['Life jackets', 'Fire extinguisher', 'First aid kit'],
-        'personal watercraft': ['Life jackets', 'Fire extinguisher', 'First aid kit'],
-    }
-    
-    if boat_type in safety_devices:
-        required_devices = safety_devices[boat_type]
-        
-        if boat_length > 20:
-            required_devices.append('EPIRB')
-        
-        return required_devices
-    else:
-        return []  # No safety devices required for unknown boat types
 
 def validate_safety_devices(user_devices, required_devices):
     return all(device in user_devices for device in required_devices)
 
-# personal lifesaving appliances, visual signals, vessel safety equipment, 
-# # navigation equipment, fire fighting equipment
-print(helper.get_flare_reduction())
-
-def flare_count(flares):
+def flare_count(flares: int):
     # reduce the number of flares if radio present
     if helper.get_flare_reduction():
         if flares == 1:
@@ -38,99 +16,97 @@ def flare_count(flares):
     else: 
         return str(int(flares))
 
+def heaving_line_length(boat_length):
+    if boat_length >= 78.8:
+        return str(30)
+    else:
+        return str(15)
+
+def compass_extra(boat_length): 
+    if boat_length <= 26.247:   # 8m
+        return "[not required if less than 8m (26ft 3 in) and within sight of navigation marks]"
+    else:
+        return ''
+
+def radar_extra(boat_length):
+    if boat_length <= 20:   # 8m
+        return "[not required if the small size of the boat OR its operation away from radar navigation makes it impossible to install or use a radar reflector.]"
+    else:
+        return ''
 
 # required safety devices by length and type
+
+# common devices
+def get_common_devices(boat_length): 
+    return {'jacket': 'Life jackets: one for every person, transport canada approved, not modified, not damaged', 
+            'reboard': 'Reboarding Device: 1 [if freeboard is 0.5m (1ft 8in) or more]', 
+            'line': f'Bouyant heaving line: {heaving_line_length(boat_length)}m',
+            'radar': f'Radar reflector: 1 [mounted properly?] {radar_extra(boat_length)}',
+            'nav': 'Navigation lights present and operational',
+            'compass': f'Magnetic compass: 1 {compass_extra(boat_length)}'}
+
 def get_required_safety_devices_by_length(boat_type, boat_length):
     if boat_type == 'Sailboat' or boat_type == 'Powerboat':
         # Sailboats and powerboats have similar requirements
         if boat_length < 20:  # 6m
-            return ['Life jackets: meet requirements', 
-                    'Reboarding Device: 1 (if freeboard is 0.5m (1ft 8in) or more)', 
-                    'Bouyant heaving line: 15m', 
-                    f'Watertight flashlight OR flares: {flare_count(3)}  (up to {flare_count(1)} type D)', 
-                    'Manual propelling device OR anchor: 15m', 
-                    'Bailer OR manual bilge pump: 1', 
-                    'Sound signalling device: 1',
-                    'Navigation lights',
-                    'Magnetic compass: 1',
-                    'Radar reflector: 1',
-                    'Fire extinguisher: 1  (type 5BC, if equipped with an inboard engine, a fixed fuel tank of any size, or a fuelburning cooking, heating or refrigerating appliance) ']
+            return {'flare': f'Watertight flashlight OR flares: {flare_count(3)}  (up to {flare_count(1)} type D)', 
+                    'prop': 'Manual propelling device OR anchor: 15m', 
+                    'bilge': 'Bailer OR manual bilge pump: 1', 
+                    'sound': 'Sound signalling device: 1',
+                    'fire':'Fire extinguisher: 1 = type 5BC [required if equipped with an inboard engine OR a fixed fuel tank of any size OR a fuelburning cooking, heating or refrigerating appliance] '}
         elif boat_length >= 20 and boat_length <= 29.5:   # 6m to 9m
-            return ['Life jackets: meet requirements', 
-                    'Reboarding Device: 1', 
-                    'Bouyant heaving line: 15m OR lifebouy attached to a buoyant line: 15m', 
-                    'Watertight flashlight: 1',
-                    f'Flares: {flare_count(6)}  (up to {flare_count(2)} type D)', 
-                    'Manual propelling device OR anchor: 15m rode', 
-                    'Bailer OR manual bilge pump: 1', 
-                    'Sound signalling device: 1',
-                    'Navigation lights',
-                    'Magnetic compass: 1',
-                    'Radar reflector: 1',
-                    'Fire extinguisher: 1  (type 5BC, if equipped with a motor)',
-                    'Fire extinguisher: 1  (type 5BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) ']
+            return {'buoy': 'IF no heaving line, lifebouy attached to a buoyant line: 15m', 
+                    'fl': 'Watertight flashlight: 1',
+                    'flare': f'Flares: {flare_count(6)}  (up to {flare_count(2)} type D)', 
+                    'prop': 'Manual propelling device OR anchor: 15m rode', 
+                    'bilge': 'Bailer OR manual bilge pump: 1', 
+                    'sound': 'Sound signalling device: 1',
+                    'fire1': 'Fire extinguisher: 1  (type 5BC, if equipped with a motor)',
+                    'fire2': 'Fire extinguisher: 1  (type 5BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) '}
         elif boat_length > 29.5 and boat_length < 39.5:     # 9m to 12m
-            return ['Life jackets: meet requirements', 
-                    'Reboarding Device: 1', 
-                    'Bouyant heaving line: 15m',
-                    'Lifebouy attached to a buoyant line: 15m', 
-                    'Watertight flashlight: 1',
-                    f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
-                    'Anchor: 30m rode (98ft 5in)', 
-                    'Manual bilge pump: 1 OR bilge-pumping arrangements', 
-                    'Sound signalling device: 1',
-                    'Navigation lights',
-                    'Magnetic compass: 1',
-                    'Radar reflector: 1',
-                    'Fire extinguisher: 1  (type 10BC, if equipped with a motor)',
-                    'Fire extinguisher: 1  (type 10BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) ']
+            return {'line': 'Bouyant heaving line: 15m',
+                    'buoy': 'Lifebouy attached to a buoyant line: 15m', 
+                    'fl': 'Watertight flashlight: 1',
+                    'faler': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
+                    'anchor': 'Anchor: 30m rode (98ft 5in)', 
+                    'bilge': 'Manual bilge pump: 1 OR bilge-pumping arrangements', 
+                    'sound': 'Sound signalling device: 1',
+                    'fire1': 'Fire extinguisher: 1  (type 10BC, if equipped with a motor)',
+                    'fire2': 'Fire extinguisher: 1  (type 10BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) '}
         elif boat_length > 39.5 and boat_length < 78.8:     # 12m to 24m
-            return ['Life jackets: meet requirements', 
-                    'Reboarding Device: 1', 
-                    'Bouyant heaving line: 15m',
-                    'Lifebouy: must have self-igniting light OR attached to a buoyant line: 15m', 
-                    'Watertight flashlight: 1',
-                    f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
-                    'Anchor: 50m (98ft 5in)', 
-                    'Bilge-pumping arrangements', 
-                    'Sound signalling device: 1 (2 required if boat 20m and over that meets applicable statndards)',
-                    'Navigation lights',
-                    'Magnetic compass: 1',
-                    'Radar reflector: 1',
-                    'Fire extinguisher: 1  (type 10BC, at access to machinery space)',
-                    'Fire extinguisher: 1  (type 10BC, at access to any accommodation space)',
-                    'Fire extinguisher: 1  (type 10BC, at access to any fuel-burning cooking, heating or refrigerating appliance) ',
-                    'Axe: 1,'
-                    'Bucket: 2 (of at least 10L each)']
-        elif boat_length > 78.8:     # 12m to 24m
-            return ['Life jackets: meet requirements', 
-                    'Reboarding Device: 1', 
-                    'Bouyant heaving line: 30m',
-                    'SOLAS lifebuoy: 1 (attached to a 30m buoyant line)',
-                    'SOLAS lifebuoy: 1 (equipped with a self-igniting light)',
-                    'Lifting harness with appropriate rigging', 
-                    'Watertight flashlight: 1',
-                    f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
-                    'Anchor: 50m (98ft 5in)', 
-                    'Bilge-pumping arrangements', 
-                    'Sound signalling devices: 2',
-                    'Navigation lights',
-                    'Magnetic compass: 1',
-                    'Radar reflector: 1',
-                    'Fire extinguisher: 1  (type 10BC, at access to machinery space)',
-                    'Fire extinguisher: 1  (type 10BC, at access to any accommodation space)',
-                    'Fire extinguisher: 1  (type 10BC, at access to any fuel-burning cooking, heating or refrigerating appliance) ',
-                    'Power-driven fire pump: 1 (located outside the machinery space, with one fire hose and nozzle that can direct water into any part of the boat)',
-                    'Axe: 2,'
-                    'Bucket: 4 (of at least 10L each)']
+            return {'buoy': 'Lifebouy: must have self-igniting light OR attached to a buoyant line: 15m', 
+                    'fl': 'Watertight flashlight: 1',
+                    'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
+                    'anchor': 'Anchor: 50m rode (164ft)', 
+                    'bilge': 'Bilge-pumping arrangements', 
+                    'sound': 'Sound signalling device: 1 [2 required if boat 20m and over] [devices meet applicable standards in collision regulations]',
+                    'fire1': 'Fire extinguisher: 1  (type 10BC, at access to machinery space)',
+                    'fire2': 'Fire extinguisher: 1  (type 10BC, at access to any accommodation space)',
+                    'fire3': 'Fire extinguisher: 1  (type 10BC, at access to any fuel-burning cooking, heating or refrigerating appliance) ',
+                    'axe': 'Axe: 1',
+                    'bucket': 'Bucket: 2 (of at least 10L each). Must be dedicated as a fire bucket.'}
+        elif boat_length >= 78.8:     # > 24m
+            return {'buoy1': 'SOLAS lifebuoy: 1 (attached to a 30m buoyant line)',
+                    'buoy2': 'SOLAS lifebuoy: 1 (equipped with a self-igniting light)',
+                    'harness': 'Lifting harness with appropriate rigging', 
+                    'fl': 'Watertight flashlight: 1',
+                    'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
+                    'anchor': 'Anchor: 50m rode (164ft)', 
+                    'bilge': 'Bilge-pumping arrangements', 
+                    'sound': 'Sound signalling devices: 2 [devices meet applicable standards in collision regulations]',
+                    'faire1': 'Fire extinguisher: 1  (type 10BC, at access to machinery space)',
+                    'fire2': 'Fire extinguisher: 1  (type 10BC, at access to any accommodation space)',
+                    'fire3': 'Fire extinguisher: 1  (type 10BC, at access to any fuel-burning cooking, heating or refrigerating appliance) ',
+                    'fire4': 'Power-driven fire pump: 1 (located outside the machinery space, with one fire hose and nozzle that can direct water into any part of the boat)',
+                    'axe': 'Axe: 2',
+                    'bucket': 'Bucket: 4 (of at least 10L each). Must be dedicated as a fire bucket.'}
 
-    elif boat_type == 'personal watercraft':
-        if boat_length < 20:
-            return ['Life jackets']
-        elif 20 <= boat_length <= 30:
-            return ['Life jackets', 'Fire extinguisher']
-        else:
-            return ['Life jackets', 'Fire extinguisher', 'First aid kit']
+    elif boat_type == 'Personal Watercraft':
+        return {'jacket': 'Life jackets:  one for every person, inflatable NOT allowed, transport canada approved, not modified, not damaged',
+                'sound': 'Sound signalling device: 1',
+                'flare': 'Watertight flashlight OR Flares: 3 (up to 1 type D)', 
+                'compass': 'Magnetic compass: 1 [if out of sight of navigation marks]',
+                'nav': 'Navigation lights present and operational [if operating after sunset, before sunrise or in periods of restricted visibility (fog, falling snow, etc.)]'}     
     else:
         return []  # No safety devices required for unknown boat types
     
