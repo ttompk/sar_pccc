@@ -37,6 +37,11 @@ def main():
             st.session_state["notes"] = ""
             st.session_state["ais_select"] = False
             st.session_state["pass_fail"] = "Yes, boat passes courtesy inspection"
+            st.session_state["tender_select"] = False
+            st.session_state["inflate_select"] = False
+            st.session_state["inflate_approved_select"] = False
+            st.session_state["inflate_serviced_select"] = False
+            st.session_state["inflate_16_select"] = False
             st.rerun()  # Rerun the app to reflect the cleared state
 
             # Reset dynamically generated keys for checkboxes in "Required Safety Devices"
