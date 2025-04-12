@@ -1,6 +1,0 @@
-streamlit
-psycopg2
-python-dotenv
-sqlalchemy
-pandas
-numpy

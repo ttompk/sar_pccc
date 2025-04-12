@@ -1,22 +1,63 @@
-# Pleasure Craft Courtesy Check App
-Small application for logging and correctly identifying boat safety equipment required on Canadian Pleasure Craft Vessels.  
+# Streamlit Boat Inspection App
 
-Application requirements:
-- log static info on the vessel
-- produce checklist of equipment need on board dependent on the size of the vessel
-- save the outcome of the inspection: eg. pass, requirements not met, recomendations, etc.
+This project is a Streamlit application designed for inspecting boats and ensuring they meet safety requirements. Users can input boat details, confirm the presence of safety devices, and record inspection results.
 
-## Data Sources
-The criteria for passing or failing an inspection is ultimately provided by Canada Coast Guard regulations - tp_511e.pdf
+## Project Structure
 
-### Python
-The program is written in python using the streamlit app.
+```
+streamlit-boat-inspection-app
+├── src
+│   ├── app.py            # Main entry point of the Streamlit application
+│   ├── database.py       # Database connection and query execution
+│   ├── utils.py          # Utility functions for safety requirements
+│   └── styles
+│       └── custom.css    # Custom styles for the application
+├── requirements.txt       # Project dependencies
+├── .streamlit
+│   └── config.toml       # Streamlit configuration settings
+├── README.md              # Project documentation
+└── .env                   # Environment variables for sensitive information
+```
 
-### Database
-Information about vessel is stored in postgres database.
+## Setup Instructions
 
-### Serving
-The application uses Render.com as the web service provider.
+1. **Clone the repository:**
+   ```
+   git clone <repository-url>
+   cd streamlit-boat-inspection-app
+   ```
 
+2. **Create a virtual environment:**
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
 
-You are a safety inspector for boats. I want to create a python application using streamlit as the user interface. This application will allow me to enter the name, boat type, and length of boat. After entering in this information a series of required safety devices will be displayed that is particular to the type and length of the boat chosen. Each requirement will have a radio button that the user can click to confirm that safety device is present. At the end of the page there should be a notes section and buttons where the user can select whether the boat passes the inspection or fails the inspection. The failure reason should be recorded in a text box. Once the user clicks the save button, the data should be stored in a postgres database. The safety requirements are contained in the attached publication. 
+3. **Install dependencies:**
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. **Configure the database:**
+   - Create a `.env` file in the root directory and add your PostgreSQL connection details.
+
+5. **Run the application:**
+   ```
+   streamlit run src/app.py
+   ```
+
+## Usage
+
+- Enter the boat's name, type, and length in the provided fields.
+- The application will display the required safety devices based on the input.
+- Confirm the presence of safety devices using the radio buttons.
+- Add any notes in the designated section.
+- Click the "Pass" or "Fail" button to record the inspection result, with the option to provide a failure reason.
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.

@@ -1,0 +1,60 @@
+-- Create boats table
+CREATE TABLE boats (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    length FLOAT NOT NULL,
+    license_status VARCHAR(50),
+    license_date DATE,
+    motorized boolean,
+    tender_motor boolean,
+    operator_card varchar()
+);
+
+-- Create inspections table
+CREATE TABLE inspections (
+    id SERIAL PRIMARY KEY,
+    boat_id INTEGER NOT NULL REFERENCES boats(id),
+    inspection_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inspector_name VARCHAR(100),
+    status VARCHAR(50) NOT NULL,
+    failure_reason TEXT,
+    notes TEXT
+);
+
+-- Create safety_devices table
+CREATE TABLE safety_devices (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+-- Create inspection_devices table
+CREATE TABLE inspection_devices (
+    id SERIAL PRIMARY KEY,
+    inspection_id INTEGER NOT NULL REFERENCES inspections(id),
+    device_id INTEGER REFERENCES safety_devices(id),
+    is_present BOOLEAN NOT NULL
+);
+
+-- Create optional_safety_equipment table
+CREATE TABLE optional_safety_equipment (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+-- Create boat_optional_equipment table
+CREATE TABLE boat_optional_equipment (
+    id SERIAL PRIMARY KEY,
+    boat_id INTEGER REFERENCES boats(id) ON DELETE CASCADE,
+    equipment_id INTEGER NOT NULL REFERENCES optional_safety_equipment(id) ON DELETE CASCADE,
+    equip_status not null varchar(50);
+);
+
+
+Relationships
+boats → inspections: A boat can have multiple inspections.
+inspections → inspection_devices: An inspection can have multiple safety devices checked.
+safety_devices → inspection_devices: A safety device can be associated with multiple inspections.
+
