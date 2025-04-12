@@ -19,6 +19,11 @@ def main():
     required_select = {}
     common_select = {}
 
+
+    # Initialize session state for active tab
+    if "active_tab" not in st.session_state:
+        st.session_state.active_tab = 0  # Start with the first tab (index 0)
+
     def reset_state_values():
             # Reset all session state variables
             st.session_state.clear()
@@ -71,12 +76,13 @@ def main():
     st.write("Organization number 1700")
     st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
     
-    tab1, tab2, tab3= st.tabs(["Basic Info", "Optional Equipment", "Required Safety Devices"])
+
+    tabs = st.tabs(["Basic Info", "Optional Equipment", "Required Safety Devices"])
 
 
     # BOAT DETAILS
-    with tab1:
-        st.header("Basic Vessel Info")
+    with tabs[0]:
+        st.subheader("Basic Vessel Info")
         
         boat_name = st.text_input("Boat Name:", key="boat_name", value="")
         boat_type = st.radio("Boat Type:", ["Sailboat", "Powerboat", "Personal Watercraft"], key="boat_type", index=0)
@@ -106,9 +112,10 @@ def main():
 
 
 
-    # OPTIONAL SAFETY EQUIPMENT
-    with tab2:
-        
+        # OPTIONAL SAFETY EQUIPMENT
+    with tabs[1]:
+        #elif st.session_state.active_tab == 1:
+    
         # User input of Operator Info
         st.subheader("Operator Info")
         competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
@@ -130,14 +137,15 @@ def main():
             charts_date_select = None
         
 
-    # Diplay required safety devices and checkboxes
-    with tab3:
+        # Diplay required safety devices and checkboxes
+    with tabs[2]:
+        #elif st.session_state.active_tab == 2:
         # is there a flare reduction?
+        
+        st.subheader("Required Safety Devices")
         reduce = reduce_flares(radio_select, plb_select, epirb_select)
         if reduce:
             flare_reduce = st.write("*** NOTE: Flare reduction applies ***")
-        
-        st.header("Required Safety Devices")
         
         # Display required safety devices by boat length and type
         # sailboats and powerboats only
@@ -169,13 +177,13 @@ def main():
                     
 
         # Radio buttons for confirming presence of safety devices
-        st.header("File Report")
+        st.subheader("File Report")
         pass_fail = st.radio("Are all required safety devices present?", ("Yes, boat passes courtesy inspection", "Yes, with deficiencies as noted", "No"))
 
         # Notes section
         notes = st.text_area("Additional Notes:", key="notes")
 
-        col1, col2, col3 = st.columns(3)  # Create three columns
+        col1, col2, col3, col4 = st.columns(4)  # Create three columns
         with col1:
             if st.button("File Report", key="file_report"):
                 
@@ -218,12 +226,22 @@ def main():
                     database.add_safety_device(inspection_id, "Inflatable PFD", "Transport Canada approved?", inlfate_approved_select)
                     database.add_safety_device(inspection_id, "Inflatable PFD", "CO2 not expired?", inflate_serviced_select)
                     database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
+                
+                # cleanup the form
+                reset_state_values()
+                st.success("Report filed successfully!")
+                st.balloons()
+                st.rerun()
+                # Reset the active tab to the first tab
+                st.session_state.active_tab = 0
+
         
-        with col3:
+        with col4:
             if st.button("Clear Form", key="reset_button"):
                 reset_state_values()
+                # Reset the active tab to the first tab
+                st.session_state.active_tab = 0
         
-        # if raft has a motor 10hp needs a license
 
 if __name__ == "__main__":
     main()
