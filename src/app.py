@@ -233,14 +233,14 @@ def main():
                 st.balloons()
                 st.rerun()
                 # Reset the active tab to the first tab
-                st.session_state.active_tab = 0
+                #st.session_state.active_tab = 0
 
         
         with col4:
             if st.button("Clear Form", key="reset_button"):
                 reset_state_values()
                 # Reset the active tab to the first tab
-                st.session_state.active_tab = 0
+                #st.session_state.active_tab = 0
         
 
 if __name__ == "__main__":
