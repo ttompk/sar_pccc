@@ -63,7 +63,8 @@ def main():
     # Top screen that never moves
     st.title("Canadian Lifeboat Institution")
     st.header("Boat Inspection App")
-    st.write("Organizational number 1700")
+    st.write("Organization number 1700")
+    st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
     
     tab1, tab2, tab3= st.tabs(["Basic Info", "Optional Equipment", "Required Safety Devices"])
 
@@ -212,6 +213,10 @@ def main():
                     database.add_safety_device(inspection_id, "Inflatable PFD", "Transport Canada approved?", inlfate_approved_select)
                     database.add_safety_device(inspection_id, "Inflatable PFD", "CO2 not expired?", inflate_serviced_select)
                     database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
+        
+        with col3:
+            if st.button("Clear Form", key="reset_button"):
+                reset_state_values()
         
         # if raft has a motor 10hp needs a license
 
