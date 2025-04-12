@@ -24,7 +24,7 @@ def main():
             st.session_state.clear()
             st.session_state["boat_name"] = ""
             st.session_state["boat_type"] = "Sailboat"
-            #st.session_state["motor"] = True
+            st.session_state["motor"] = True
             st.session_state["boat_length"] = 1
             st.session_state["boat_license_select"] = "None"
             st.session_state["boat_license_date"] = None
@@ -76,6 +76,8 @@ def main():
         boat_type = st.radio("Boat Type:", ["Sailboat", "Powerboat", "Personal Watercraft"], key="boat_type", index=0)
         if boat_type == "Sailboat":
             motor = st.toggle("Is there a motor?", value=True, key="motor")
+        else:
+            motor = True
         
         #if boat_type != "Personal Watercraft":
         boat_length = st.number_input("Enter Boat Length (in feet):", min_value=1, key="boat_length")
