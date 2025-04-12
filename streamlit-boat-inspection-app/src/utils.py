@@ -56,7 +56,7 @@ def get_required_safety_devices_by_length(boat_type, boat_length):
                     'fire':'Fire extinguisher: 1 = type 5BC [required if equipped with an inboard engine OR a fixed fuel tank of any size OR a fuelburning cooking, heating or refrigerating appliance] '}
         elif boat_length >= 20 and boat_length <= 29.5:   # 6m to 9m
             return {'buoy': 'IF no heaving line, lifebouy attached to a buoyant line: 15m', 
-                    'fl': 'Watertight flashlight: 1',
+                    'flashlight': 'Watertight flashlight: 1',
                     'flare': f'Flares: {flare_count(6)}  (up to {flare_count(2)} type D)', 
                     'prop': 'Manual propelling device OR anchor: 15m rode', 
                     'bilge': 'Bailer OR manual bilge pump: 1', 
@@ -64,10 +64,9 @@ def get_required_safety_devices_by_length(boat_type, boat_length):
                     'fire1': 'Fire extinguisher: 1  (type 5BC, if equipped with a motor)',
                     'fire2': 'Fire extinguisher: 1  (type 5BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) '}
         elif boat_length > 29.5 and boat_length < 39.5:     # 9m to 12m
-            return {'line': 'Bouyant heaving line: 15m',
-                    'buoy': 'Lifebouy attached to a buoyant line: 15m', 
-                    'fl': 'Watertight flashlight: 1',
-                    'faler': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
+            return {'buoy': 'Lifebouy attached to a buoyant line: 15m', 
+                    'flashlight': 'Watertight flashlight: 1',
+                    'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
                     'anchor': 'Anchor: 30m rode (98ft 5in)', 
                     'bilge': 'Manual bilge pump: 1 OR bilge-pumping arrangements', 
                     'sound': 'Sound signalling device: 1',
@@ -75,7 +74,7 @@ def get_required_safety_devices_by_length(boat_type, boat_length):
                     'fire2': 'Fire extinguisher: 1  (type 10BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) '}
         elif boat_length > 39.5 and boat_length < 78.8:     # 12m to 24m
             return {'buoy': 'Lifebouy: must have self-igniting light OR attached to a buoyant line: 15m', 
-                    'fl': 'Watertight flashlight: 1',
+                    'flashlight': 'Watertight flashlight: 1',
                     'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
                     'anchor': 'Anchor: 50m rode (164ft)', 
                     'bilge': 'Bilge-pumping arrangements', 
@@ -89,7 +88,7 @@ def get_required_safety_devices_by_length(boat_type, boat_length):
             return {'buoy1': 'SOLAS lifebuoy: 1 (attached to a 30m buoyant line)',
                     'buoy2': 'SOLAS lifebuoy: 1 (equipped with a self-igniting light)',
                     'harness': 'Lifting harness with appropriate rigging', 
-                    'fl': 'Watertight flashlight: 1',
+                    'flashlight': 'Watertight flashlight: 1',
                     'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 
                     'anchor': 'Anchor: 50m rode (164ft)', 
                     'bilge': 'Bilge-pumping arrangements', 

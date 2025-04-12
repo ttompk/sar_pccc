@@ -24,7 +24,7 @@ def main():
             st.session_state.clear()
             st.session_state["boat_name"] = ""
             st.session_state["boat_type"] = "Sailboat"
-            st.session_state["motor"] = True
+            #st.session_state["motor"] = True
             st.session_state["boat_length"] = 1
             st.session_state["boat_license_select"] = "None"
             st.session_state["boat_license_date"] = None
@@ -79,12 +79,23 @@ def main():
         
         #if boat_type != "Personal Watercraft":
         boat_length = st.number_input("Enter Boat Length (in feet):", min_value=1, key="boat_length")
-        boat_license_select = st.selectbox("Is boat licensed/registered? : ", options=["None", "Licensed", "Registered"], key="boat_license_select")
+        
+        # boat licensed? Registered? Are they up to date?
+        boat_license_select = st.selectbox("Is boat licensed/registered? : ", options=["None", "Licensed", "Registered"], index=1, key="boat_license_select")
         if boat_license_select != "None":
             boat_license_date = st.date_input("Date boat last licensed/registered: ", value=None, key="boat_license_date")
             # license lasts 10 years, registration lasts 3 years
             if boat_license_date != None:
                 check_expired_license(boat_license_select, boat_license_date)
+        else:
+            boat_license_date= None
+        
+        # is there a motorized tender?
+        tender_select = st.toggle("Is there a motorized tender?", value=False, key="tender_select")
+        if tender_select == True:
+            st.write("A motorized tender of 10hp (7.5 kw) or more requires a license.")
+            #tender_motor = st.text_input("Tender motor size: ", key="tender_motor", value="")
+
 
 
     # OPTIONAL SAFETY EQUIPMENT
@@ -92,7 +103,7 @@ def main():
         
         # User input of Operator Info
         st.subheader("Operator Info")
-        competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate"], key="competency_select")
+        competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
         
         # Optional Equipment
         st.subheader("Optional Equipment")
@@ -107,6 +118,8 @@ def main():
         if charts_select in ["Paper","Electronic"]:
             # charts up to date? 
             charts_date_select = st.toggle("Charts up to date?", value=False, key="charts_date_select")
+        else:
+            charts_date_select = None
         
 
     # Diplay required safety devices and checkboxes
@@ -131,13 +144,13 @@ def main():
                     required_select.update( {key: st.checkbox(device, key=key)} )
                 
             # inflatable PFDs
-            inflate_select = st.toggle("Inflatable PFDs?", value=False, key="inflate_select")
+            inflate_select = st.toggle("Operator uses Inflatable PFDs?", value=False, key="inflate_select")
             if inflate_select:
                 col11, col22 = st.columns([1, 15])  # Adjust the ratio for spacing
                 with col22:
                     inlfate_approved_select = st.toggle("Transport Canada approved?", value=False, key="inflate_approved_select")
                     inflate_serviced_select = st.toggle("CO2 not expired?", value=False, key="inflate_serviced_select")
-                    inflate_16_select = st.toggle("16 years or older?", value=False, key="inflate_16_select")
+                    inflate_16_select = st.toggle("User is 16 years old or older?", value=False, key="inflate_16_select")
         else:
             # Personal Watercraft
             if boat_type == "Personal Watercraft":
@@ -160,12 +173,26 @@ def main():
                 
                 # BOAT INFO
                 # add boat and retrieve the unique boat id from the database
-                boat_id = database.add_to_boat_table(boat_name, boat_type, motor, boat_length, boat_license_select, boat_license_date)
+                boat_id = database.add_to_boat_table(
+                    boat_name, 
+                    boat_type, 
+                    motor, 
+                    boat_length, 
+                    boat_license_select, 
+                    boat_license_date, 
+                    tender_select, 
+                    competency_select)
 
                 # OPTIONAL EQUIPMENT 
                 # update database with optional equipment to the boat
                 # the keys for optional_eq are the equipment id's in the database, do not change
-                optional_eq = {1: radio_select, 2: epirb_select, 3: plb_select, 4: ais_select, 5: charts_select, 6: charts_date_select}
+                optional_eq = {
+                    "Radio Radio": radio_select, 
+                    "EPIRB": epirb_select, 
+                    "Personal Locator Beacon": plb_select, 
+                    "AIS": ais_select, 
+                    "Charts": charts_select, 
+                    "Chart Date": charts_date_select}
                 database.add_optional_equipment_to_boat(boat_id, optional_eq)
 
                 # REQURED DEVICES
@@ -185,16 +212,6 @@ def main():
                     database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
         
         # if raft has a motor 10hp needs a license
-        
-
-
-    col01, col02 = st.columns([3,1])  # Adjust the ratio for spacing
-    with col02: 
-        if st.button("Clear Form", key='"clear_form"'):
-            reset_state_values()
-        if st.button("dev", key="dev"):
-            print(required_select)
-            print(common_select)
 
 if __name__ == "__main__":
     main()
