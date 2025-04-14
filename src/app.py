@@ -120,11 +120,15 @@ def main():
         
         # user input of Operator Info
         st.subheader("Operator Info")
+        st.write("If the operator requests an emailed report they can provide their email and a report will be delivered to them.")
+        st.text_input("Operator email: ", key="operator_name", value="")
         competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
         roc_select = st.toggle("Operator has a ROC-M?", value=False, key="roc_select")
-        st.toggle("Does the operator have a sound understanding of the risks of hypothermia?", value=False, key="hypothermia_select")
-        st.toggle("Does the operator know how to throw a bouyant heaving line?", value=False, key="heaving_select")
-        st.toggle("Does the opertor ")
+        hypo_select = st.toggle("Does the operator have a sound understanding of the risks of hypothermia? Explain 1-10-1 rule. Explain that cold water shock kills more people than hypotheremia due to aphixiation or muscle control. ", value=False, key="hypothermia_select")
+        heave_select = st.toggle("Can the operator demonstrate how to throw a bouyant heaving line?", value=False, key="heaving_select")
+        sailplan_select = st.toggle("Does the opertor file a Sail Plan with a responsible person before every trip?", value=False, key="xxx_select")
+        co_select = st.toggle("Is the operator aware of carbon monoxide poisoning and have detectors?", value=False, key="co_select")
+
     
 
     # OPTIONAL SAFETY EQUIPMENT
