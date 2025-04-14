@@ -72,7 +72,7 @@ def get_required_safety_devices_by_length(boat_type, boat_length):
                     'sound': 'Sound signalling device: 1',
                     'fire1': 'Fire extinguisher: 1  (type 10BC, if equipped with a motor)',
                     'fire2': 'Fire extinguisher: 1  (type 10BC, if equipped with a fuel-burning cooking, heating or refrigerating appliance) '}
-        elif boat_length > 39.5 and boat_length < 78.8:     # 12m to 24m
+        elif boat_length >= 39.5 and boat_length < 78.8:     # 12m to 24m
             return {'buoy': 'Lifebouy: must have self-igniting light OR attached to a buoyant line: 15m', 
                     'flashlight': 'Watertight flashlight: 1',
                     'flare': f'Flares: {flare_count(12)}  (up to {flare_count(6)} type D)', 

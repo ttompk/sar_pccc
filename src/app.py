@@ -5,6 +5,7 @@ from helper import reduce_flares
 import datetime
 from dateutil.relativedelta import relativedelta
 import time
+import os
 
 
 def main():
@@ -110,24 +111,30 @@ def main():
         if tender_select == True:
             st.write("A motorized tender of 10hp (7.5 kw) or more requires a license.")
             #tender_motor = st.text_input("Tender motor size: ", key="tender_motor", value="")
-
-
-
-        # OPTIONAL SAFETY EQUIPMENT
-    with tabs[1]:
-        #elif st.session_state.active_tab == 1:
-    
-        # User input of Operator Info
+        
+        # user input of Operator Info
         st.subheader("Operator Info")
         competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
-        
+        roc_select = st.toggle("Operator has a ROC-M?", value=False, key="roc_select")
+        st.toggle("Does the operator have a sound understanding of the risks of hypothermia?", value=False, key="hypothermia_select")
+        st.toggle("Does the operator know how to throw a bouyant heaving line?", value=False, key="heaving_select")
+        st.toggle("Does the opertor ")
+    
+
+    # OPTIONAL SAFETY EQUIPMENT
+    with tabs[1]:
+        #elif st.session_state.active_tab == 1:
+      
         # Optional Equipment
         st.subheader("Optional Equipment")
         radio_select = st.toggle(label="VHF radio?: ", value=False, key="radio_select") # affects the number of flares required
         epirb_select = st.toggle("EPIRB?", value=False, key="epirb_select") # affects the number of flares required
         plb_select = st.toggle("Operator wears a personal locator beacon? ", value=False, key="plb_select") # affects the number of flares required
-        ais_select = st.toggle("AIS onboard?", value=False, key="ais_select")
+        if epirb_select or plb_select:
+            st.write("Ensuring that your PLB or EPIRB is registered, as well as updating the information regularly, will facilitate the task for search and rescue personnel in the event of a distress situation.")
+            st.write("For further information regarding VHF radios or EPIRBS please visit: https://www.tc.gc.ca/eng/marinesafety/oep-navigation-radiocommsfaqs-1489.htm")
 
+        ais_select = st.toggle("AIS onboard?", value=False, key="ais_select")
 
         #st.subheader("Navigation Equipment (optional)")
         charts_select = st.radio("Charts present? ", ["None", "Paper", "Electronic"], key="charts_select")  
@@ -138,7 +145,7 @@ def main():
             charts_date_select = None
         
 
-        # Diplay required safety devices and checkboxes
+    # Diplay required safety devices and checkboxes
     with tabs[2]:
         #elif st.session_state.active_tab == 2:
         # is there a flare reduction?
@@ -147,6 +154,7 @@ def main():
         reduce = reduce_flares(radio_select, plb_select, epirb_select)
         if reduce:
             flare_reduce = st.write("*** NOTE: Flare reduction applies ***")
+        st.table()
         
         # Display required safety devices by boat length and type
         # sailboats and powerboats only
@@ -187,60 +195,62 @@ def main():
         col1, col2, col3, col4 = st.columns(4)  # Create three columns
         with col1:
             # text box to enter org password
-            pword = st.text_input("Enter Organization Password: ", type="password", key="pword")
-            # 
+            pword = st.text_input("Enter Organization Password to Save Report: ", type="password", key="pword")
             try: 
+                # verify the password for adding report to database
                 if st.button("File Report", key="file_report"):
-                    
-                    # BOAT INFO
-                    # add boat and retrieve the unique boat id from the database
-                    boat_id = database.add_to_boat_table(
-                        boat_name, 
-                        boat_type, 
-                        motor, 
-                        boat_length, 
-                        boat_license_select, 
-                        boat_license_date, 
-                        tender_select, 
-                        competency_select)
 
-                    # OPTIONAL EQUIPMENT 
-                    # update database with optional equipment to the boat
-                    # the keys for optional_eq are the equipment id's in the database, do not change
-                    optional_eq = {
-                        "Radio Radio": radio_select, 
-                        "EPIRB": epirb_select, 
-                        "Personal Locator Beacon": plb_select, 
-                        "AIS": ais_select, 
-                        "Charts": charts_select, 
-                        "Chart Date": charts_date_select}
-                    database.add_optional_equipment_to_boat(boat_id, optional_eq)
+                    if str(pword) == os.getenv('CLI_P'):
+                        
+                        # BOAT INFO
+                        # add boat and retrieve the unique boat id from the database
+                        boat_id = database.add_to_boat_table(
+                            boat_name, 
+                            boat_type, 
+                            motor, 
+                            boat_length, 
+                            boat_license_select, 
+                            boat_license_date, 
+                            tender_select, 
+                            competency_select)
 
-                    # REQURED DEVICES
-                    # update the inspections table - note, there is an autogenerated timestamp in table
-                    inspector_name = "CLI Staff"
-                    inspection_id = database.add_inspection_info_to_db(boat_id, inspector_name, pass_fail, notes)
+                        # OPTIONAL EQUIPMENT 
+                        optional_eq = {
+                                    "Radio Radio": radio_select, 
+                                    "EPIRB": epirb_select, 
+                                    "Personal Locator Beacon": plb_select, 
+                                    "AIS": ais_select, 
+                                    "Charts": charts_select, 
+                                    "Chart Date": charts_date_select}
+                        database.add_optional_equipment_to_boat(boat_id, optional_eq)
 
-                    # Use the inspection_id to update the inspection_devices table
-                    for device_name, device_descr in common_devices.items():
-                        database.add_safety_device(inspection_id, device_name, device_descr, common_select[device_name])
-                    for device_name, device_descr in required_devices.items():
-                        database.add_safety_device(inspection_id, device_name, device_descr, required_select[device_name])
-                    database.add_safety_device(inspection_id, "Inflatable PFD", "Inflatable PFDs present?", inflate_select)
-                    if inflate_select:
-                        database.add_safety_device(inspection_id, "Inflatable PFD", "Transport Canada approved?", inlfate_approved_select)
-                        database.add_safety_device(inspection_id, "Inflatable PFD", "CO2 not expired?", inflate_serviced_select)
-                        database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
-                    
-                    # cleanup the form
-                    # if the report back from databse without errors then let user know
-                    st.success("Report filed successfully!")
-                    #st.balloons()
-                    time.sleep(3)
-                    reset_state_values()
-                    st.rerun()
-                    # Reset the active tab to the first tab
-                    #st.session_state.active_tab = 0
+                        # REQURED DEVICES
+                        # update the inspections table - note, there is an autogenerated timestamp in table
+                        inspector_name = "CLI Staff"
+                        inspection_id = database.add_inspection_info_to_db(boat_id, inspector_name, pass_fail, notes)
+
+                        # Use the inspection_id to update the inspection_devices table
+                        for device_name, device_descr in common_devices.items():
+                            database.add_safety_device(inspection_id, device_name, device_descr, common_select[device_name])
+                        for device_name, device_descr in required_devices.items():
+                            database.add_safety_device(inspection_id, device_name, device_descr, required_select[device_name])
+                        database.add_safety_device(inspection_id, "Inflatable PFD", "Inflatable PFDs present?", inflate_select)
+                        if inflate_select:
+                            database.add_safety_device(inspection_id, "Inflatable PFD", "Transport Canada approved?", inlfate_approved_select)
+                            database.add_safety_device(inspection_id, "Inflatable PFD", "CO2 not expired?", inflate_serviced_select)
+                            database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
+                        
+                        # cleanup the form
+                        # if the report back from databse without errors then let user know
+                        st.success("Report filed successfully!")
+                        time.sleep(3)
+                        
+                        reset_state_values()
+                        st.rerun()
+                        # Reset the active tab to the first tab
+                        #st.session_state.active_tab = 0
+                    else: 
+                        st.error("Incorrect password. Please try again.")
             except Exception as e:
                 st.error(f"Error filing report: {e}")
         
