@@ -49,6 +49,12 @@ def main():
             st.session_state["inflate_approved_select"] = False
             st.session_state["inflate_serviced_select"] = False
             st.session_state["inflate_16_select"] = False
+            st.session_state["roc_select"] = False
+            st.session_state["hypothermia_select"] = False
+            st.session_state["heaving_select"] = False
+            st.session_state["notes"] = ""
+            st.session_state["pword"] = ""
+
             st.rerun()  # Rerun the app to reflect the cleared state
 
             # Reset dynamically generated keys for checkboxes in "Required Safety Devices"
@@ -241,16 +247,14 @@ def main():
                             database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
                         
                         # cleanup the form
-                        # if the report back from databse without errors then let user know
+                        # if the report back from databse without errors then let user know and clean up the form
                         st.success("Report filed successfully!")
                         time.sleep(3)
-                        
                         reset_state_values()
-                        st.rerun()
                         # Reset the active tab to the first tab
                         #st.session_state.active_tab = 0
                     else: 
-                        st.error("Incorrect password. Please try again.")
+                        st.error("Error saving information. Please try again.")
             except Exception as e:
                 st.error(f"Error filing report: {e}")
         
