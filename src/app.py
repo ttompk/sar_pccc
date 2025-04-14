@@ -211,18 +211,17 @@ def main():
         notes = st.text_area("Additional Notes:", key="notes")
 
         # operator email 
-        st.write("If the operator requests an emailed report they can provide their email and a report will be delivered to them.")
-        operator_email = st.text_input("Operator email: ", key="operator_email", value="")
+        #st.write("If the operator requests an emailed report they can provide their email and a report will be delivered to them.")
+        operator_email = st.text_input("Operator email: (Optional - if operator requests an emailed report.)", key="operator_email", value="")
 
         # button positioning
         col1, col2, col3, col4 = st.columns(4)  # Create three columns
         with col1:
+            
             # text box to enter org password
-            pword = st.text_input("Enter Organization Password to Save Report: ", type="password", key="pword")
+            pword = st.text_input("Enter Organization Password to Save Report: (not required) ", type="password", key="pword")
             try: 
-                # verify the password for adding report to database
                 if st.button("File Report", key="file_report"):
-
                     if str(pword) == os.getenv('CLI_P'):
                         
                         # BOAT INFO
