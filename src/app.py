@@ -205,7 +205,7 @@ def main():
 
         # Radio buttons for confirming presence of safety devices
         st.subheader("File Report")
-        pass_fail = st.radio("Are all required safety devices present?", ("Yes, boat passes courtesy inspection", "Yes, with deficiencies as noted", "No"))
+        pass_fail = st.radio("Are all required safety devices present?", ("Yes, boat passes courtesy inspection", "Yes, with deficiencies as noted", "No"), index=0)
 
         # Notes section
         notes = st.text_area("Additional Notes:", key="notes")
