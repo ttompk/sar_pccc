@@ -29,32 +29,40 @@ def main():
     def reset_state_values():
             # Reset all session state variables
             st.session_state.clear()
+            
+            # vessel
             st.session_state["boat_name"] = ""
             st.session_state["boat_type"] = "Sailboat"
             st.session_state["motor"] = True
             st.session_state["boat_length"] = 1
             st.session_state["boat_license_select"] = "None"
             st.session_state["boat_license_date"] = None
+            st.session_state["tender_select"] = False
+            # optional
             st.session_state["radio_select"] = False
             st.session_state["plb_select"] = False
             st.session_state["epirb_select"] = False
-            st.session_state["competency_select"] = "PCOC"
             st.session_state["charts_select"] = "None"
             st.session_state["charts_date_select"] = False
-            st.session_state["notes"] = ""
             st.session_state["ais_select"] = False
-            st.session_state["pass_fail"] = "Yes, boat passes courtesy inspection"
-            st.session_state["tender_select"] = False
+            # required
             st.session_state["inflate_select"] = False
             st.session_state["inflate_approved_select"] = False
             st.session_state["inflate_serviced_select"] = False
             st.session_state["inflate_16_select"] = False
+            # operator
+            st.session_state["operator_email"] = ""
+            st.session_state["competency_select"] = "None"
             st.session_state["roc_select"] = False
-            st.session_state["hypothermia_select"] = False
-            st.session_state["heaving_select"] = False
+            st.session_state["hypo_select"] = False
+            st.session_state["heave_select"] = False
+            st.session_state["sailplan_select"] = False
+            st.session_state["co_select"] = False
+            # filing
             st.session_state["notes"] = ""
             st.session_state["pword"] = ""
-
+            st.session_state["pass_fail"] = "Yes, boat passes courtesy inspection"
+            
             st.rerun()  # Rerun the app to reflect the cleared state
 
             # Reset dynamically generated keys for checkboxes in "Required Safety Devices"
@@ -84,8 +92,7 @@ def main():
     #st.write("Organization number 1700")
     st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
     
-
-    tabs = st.tabs(["Basic Info", "Optional Equipment", "Required Safety Devices"])
+    tabs = st.tabs(["Vessel Info", "Optional Equipment", "Required Safety Devices", "Operator Info"])
 
 
     # BOAT DETAILS
@@ -118,17 +125,6 @@ def main():
             st.write("A motorized tender of 10hp (7.5 kw) or more requires a license.")
             #tender_motor = st.text_input("Tender motor size: ", key="tender_motor", value="")
         
-        # user input of Operator Info
-        st.subheader("Operator Info")
-        st.write("If the operator requests an emailed report they can provide their email and a report will be delivered to them.")
-        st.text_input("Operator email: ", key="operator_name", value="")
-        competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
-        roc_select = st.toggle("Operator has a ROC-M?", value=False, key="roc_select")
-        hypo_select = st.toggle("Does the operator have a sound understanding of the risks of hypothermia? Explain 1-10-1 rule. Explain that cold water shock kills more people than hypotheremia due to aphixiation or muscle control. ", value=False, key="hypothermia_select")
-        heave_select = st.toggle("Can the operator demonstrate how to throw a bouyant heaving line?", value=False, key="heaving_select")
-        sailplan_select = st.toggle("Does the opertor file a Sail Plan with a responsible person before every trip?", value=False, key="xxx_select")
-        co_select = st.toggle("Is the operator aware of carbon monoxide poisoning and have detectors?", value=False, key="co_select")
-
     
 
     # OPTIONAL SAFETY EQUIPMENT
@@ -195,6 +191,18 @@ def main():
                         required_select = st.checkbox(device, key=key)
                     
 
+    # Operator and File Report
+    with tabs[3]:
+        
+        # user input of Operator Info
+        st.subheader("Operator Info")
+        competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
+        roc_select = st.toggle("Operator has a ROC-M?", value=False, key="roc_select")
+        hypo_select = st.toggle("Does the operator have a sound understanding of the risks of hypothermia? Explain 1-10-1 rule. Explain that cold water shock kills more people than hypotheremia due to aphixiation or muscle control. ", value=False, key="hypo_select")
+        heave_select = st.toggle("Can the operator demonstrate how to throw a bouyant heaving line?", value=False, key="heave_select")
+        sailplan_select = st.toggle("Does the opertor file a Sail Plan with a responsible person before every trip?", value=False, key="sailplan_select")
+        co_select = st.toggle("Is the operator aware of carbon monoxide poisoning and have detectors?", value=False, key="co_select")
+
         # Radio buttons for confirming presence of safety devices
         st.subheader("File Report")
         pass_fail = st.radio("Are all required safety devices present?", ("Yes, boat passes courtesy inspection", "Yes, with deficiencies as noted", "No"))
@@ -202,6 +210,11 @@ def main():
         # Notes section
         notes = st.text_area("Additional Notes:", key="notes")
 
+        # operator email 
+        st.write("If the operator requests an emailed report they can provide their email and a report will be delivered to them.")
+        operator_email = st.text_input("Operator email: ", key="operator_email", value="")
+
+        # button positioning
         col1, col2, col3, col4 = st.columns(4)  # Create three columns
         with col1:
             # text box to enter org password
