@@ -73,7 +73,7 @@ def main():
     # Top screen that never moves
     st.title("Canadian Lifeboat Institution")
     st.header("Boat Inspection App")
-    st.write("Organization number 1700")
+    #st.write("Organization number 1700")
     st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
     
 
@@ -185,6 +185,8 @@ def main():
 
         col1, col2, col3, col4 = st.columns(4)  # Create three columns
         with col1:
+            # text box to enter org password
+
             if st.button("File Report", key="file_report"):
                 
                 # BOAT INFO
