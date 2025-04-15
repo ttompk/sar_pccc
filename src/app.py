@@ -215,7 +215,7 @@ def main():
         operator_email = st.text_input("Operator email: (Optional - if operator requests an emailed report.)", key="operator_email", value="")
 
         # button positioning
-        col1, col2, col3, col4 = st.columns(4)  # Create three columns
+        col1, col2, col3, col4 = st.columns(3)  # Create three columns
         with col1:
             
             # text box to enter org password
