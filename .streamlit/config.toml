@@ -12,6 +12,3 @@ font = "sans serif"
 
 [browser]
 gatherUsageStats = false
-
-[layout]
-wideMode = false
