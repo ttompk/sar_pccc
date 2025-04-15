@@ -6,6 +6,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import time
 import os
+import pandas as pd
 
 
 def main():
@@ -175,10 +176,11 @@ def main():
         # is there a flare reduction?
         
         st.subheader("Required Safety Devices")
+
+        # flare reduction?
         reduce = reduce_flares(radio_select, plb_select, epirb_select)
         if reduce:
-            flare_reduce = st.write("*** NOTE: Flare reduction applies ***")
-        st.table()
+            flare_reduce = st.write("*** NOTE: Flare reduction applies ***")        
         
         # Display required safety devices by boat length and type
         # sailboats and powerboats only
@@ -208,8 +210,15 @@ def main():
                     for key, device in required_devices.items():
                         required_select = st.checkbox(device, key=key)
                     
+        # Display table of flare types - TO BE COMPLETED
+        flare_table = pd.DataFrame({
+            "Flare Type": ["Type A: parachute", "Type B: rocket", "Type C: hand-held", "Type D: smoke", "Electronic"],
+            "Image": ["image", "image", "image", "image", "image"],
+            "Duration": ["40 seconds", "4 seconds", "1 minute", "30 seconds", "X minutes"]
+            }).reset_index(drop=True)
+        #st.table(flare_table)
 
-    # Operator and File Report
+    # Operator and File '''Report
     with tabs[3]:
         
         # user input of Operator Info
