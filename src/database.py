@@ -119,3 +119,28 @@ def add_safety_device(inspection_id, device_name, device_desr, is_present):
     finally:
         session.close()
 
+
+def add_operator_info_to_db(boat_id, inspection_id, competency_select, roc_select, hypo_select, heave_select, sailplan_select, co_select,operator_email):
+    session = get_session()
+    try:
+        query = text("""
+            INSERT INTO boat_user (boat_id, inspection_id, operator_card, roc, hypothermia, heave_line, sail_plan, carbon_monoxide, operator_email)
+            VALUES (:boat_id, :inspection_id, :competency_select, :roc_select, :hypo_select, :heave_select, :sailplan_select, :co_select, :operator_email);
+        """)
+        session.execute(query, {
+            "boat_id": boat_id,
+            "inspection_id": inspection_id,
+            "competency_select": competency_select,
+            "roc_select": roc_select,
+            "hypo_select": hypo_select,
+            "heave_select": heave_select,
+            "sailplan_select": sailplan_select,
+            "co_select": co_select,
+            "operator_email": operator_email
+        })
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()

@@ -7,8 +7,7 @@ CREATE TABLE boats (
     license_status VARCHAR(50),
     license_date DATE,
     motorized boolean,
-    tender_motor boolean,
-    operator_card varchar()
+    tender_motor boolean
 );
 
 -- Create inspections table
@@ -33,8 +32,9 @@ CREATE TABLE safety_devices (
 CREATE TABLE inspection_devices (
     id SERIAL PRIMARY KEY,
     inspection_id INTEGER NOT NULL REFERENCES inspections(id),
-    device_id INTEGER REFERENCES safety_devices(id),
-    is_present BOOLEAN NOT NULL
+    is_present BOOLEAN NOT NULL,
+    device_name VARCHAR(50),
+    device_descr VARCHAR(200)
 );
 
 -- Create optional_safety_equipment table
@@ -49,9 +49,23 @@ CREATE TABLE boat_optional_equipment (
     id SERIAL PRIMARY KEY,
     boat_id INTEGER REFERENCES boats(id) ON DELETE CASCADE,
     equipment_id INTEGER NOT NULL REFERENCES optional_safety_equipment(id) ON DELETE CASCADE,
-    equip_status not null varchar(50);
+    equip_status not null varchar(50),
+    equipment_name VARCHAR(100)
 );
 
+-- Create operators table called boat_user (operator is a reserved word in sql)
+CREATE TABLE boat_user (
+    id serial primary KEY,
+    boat_id INTEGER REFERENCES boats(id) ON DELETE CASCADE,
+    inspection_id INTEGER NOT NULL REFERENCES inspections(id),
+    operator_card varchar(50),
+    roc BOOLEAN,
+    hypothermia BOOLEAN,
+    heave_line BOOLEAN,
+    sail_plan BOOLEAN,
+    carbon_monoxide BOOLEAN,
+    operator_email varchar(100)
+);
 
 Relationships
 boats → inspections: A boat can have multiple inspections.

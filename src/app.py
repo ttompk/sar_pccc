@@ -98,7 +98,7 @@ def main():
     #st.write("Organization number 1700")
     st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
     
-    tabs = st.tabs(["Vessel Info", "Optional Equipment", "Required Safety Devices", "Operator Info"])
+    tabs = st.tabs(["Vessel Info", "Optional Equipment", "Required Safety Devices", "Operator Info/File Report"])
 
 
     # BOAT DETAILS
@@ -268,7 +268,19 @@ def main():
                             database.add_safety_device(inspection_id, "Inflatable PFD", "CO2 not expired?", inflate_serviced_select)
                             database.add_safety_device(inspection_id, "Inflatable PFD", "16 years or older?", inflate_16_select)
                         
-                        # cleanup the form
+                        # OPERATOR INFO
+                        database.add_operator_info_to_db(
+                            boat_id, 
+                            inspection_id,
+                            competency_select, 
+                            roc_select, 
+                            hypo_select, 
+                            heave_select, 
+                            sailplan_select, 
+                            co_select,
+                            operator_email)
+
+                        # CLEAN UP THE FORM
                         # if the report back from databse without errors then let user know and clean up the form
                         st.success("Report filed successfully!")
                         time.sleep(3)
