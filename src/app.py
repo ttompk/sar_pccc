@@ -87,7 +87,13 @@ def main():
 
     
     # Top screen that never moves
-    st.title("Canadian Lifeboat Institution")
+    #
+    col001, col002 = st.columns([1, 3])  # Adjust the ratio for spacing
+    with col001:
+        st.image("CLI_Logo.png", width=150)
+    with col002:
+        st.title("Canadian Lifeboat Institution")
+    
     st.header("Boat Inspection App")
     #st.write("Organization number 1700")
     st.write("Select the tabs below to navigate through the forms. Press 'File Report' to save the inspection report.")
@@ -215,7 +221,7 @@ def main():
         operator_email = st.text_input("Operator email: (Optional - if operator requests an emailed report.)", key="operator_email", value="")
 
         # button positioning
-        col1, col2, col3, col4 = st.columns(3)  # Create three columns
+        col1, col2, col3, col4 = st.columns([2,1,1,2])  # Create three columns
         with col1:
             
             # text box to enter org password
@@ -274,11 +280,11 @@ def main():
             except Exception as e:
                 st.error(f"Error filing report: {e}")
         
-        with col4:
-            if st.button("Clear Form", key="reset_button"):
-                reset_state_values()
-                # Reset the active tab to the first tab
-                #st.session_state.active_tab = 0
+        #with col4:
+        if st.button("Clear Form", key="reset_button"):
+            reset_state_values()
+            # Reset the active tab to the first tab
+            #st.session_state.active_tab = 0
         
 
 if __name__ == "__main__":
