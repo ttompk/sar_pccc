@@ -204,7 +204,7 @@ def main():
         st.subheader("Operator Info")
         competency_select = st.selectbox("Operator Competency? : ", options=["PCOC", "Proof of Course", "Rental Boat Checklist", "Marine Safety Certificate", "None"], key="competency_select")
         roc_select = st.toggle("Operator has a ROC-M?", value=False, key="roc_select")
-        hypo_select = st.toggle("Does the operator have a sound understanding of the risks of hypothermia? Explain 1-10-1 rule. Explain that cold water shock kills more people than hypotheremia due to aphixiation or muscle control. ", value=False, key="hypo_select")
+        hypo_select = st.toggle("Does the operator have a sound understanding of the risks of hypothermia? Explain 1-10-1 rule. Explain that cold water shock likely kills more people than hypotheremia due to asphyxiation or lack of muscle control. ", value=False, key="hypo_select")
         heave_select = st.toggle("Can the operator demonstrate how to throw a bouyant heaving line?", value=False, key="heave_select")
         sailplan_select = st.toggle("Does the opertor file a Sail Plan with a responsible person before every trip?", value=False, key="sailplan_select")
         co_select = st.toggle("Is the operator aware of carbon monoxide poisoning and have detectors?", value=False, key="co_select")
@@ -244,7 +244,7 @@ def main():
 
                         # OPTIONAL EQUIPMENT 
                         optional_eq = {
-                                    "Radio Radio": radio_select, 
+                                    "VHF Radio": radio_select, 
                                     "EPIRB": epirb_select, 
                                     "Personal Locator Beacon": plb_select, 
                                     "AIS": ais_select, 
