@@ -10,22 +10,6 @@ import os
 
 def main():
 
-    st.markdown("""
-    <style>
-    @media only screen and (max-width: 600px) {
-    .your-class { font-size: 14px; }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    required_select = {}
-    common_select = {}
-
-
-    # Initialize session state for active tab
-    if "active_tab" not in st.session_state:
-        st.session_state.active_tab = 0  # Start with the first tab (index 0)
-
     def reset_state_values():
             # Reset all session state variables
             st.session_state.clear()
@@ -70,25 +54,44 @@ def main():
                 if key.startswith("device_"):  # Assuming keys for devices start with "device_"
                     del st.session_state[key]
 
-    def check_expired_license(boat_license_select, boat_license_date):
+    def check_expired_license(boat_license_select, boat_license_month, boat_license_year):
         # Get today's date
-        today = datetime.date.today()
+        today = datetime.datetime.today()
+        given_date = datetime.datetime(boat_license_year, boat_license_month, 1)
 
         three_years_ago = today - relativedelta(years=3)        
         ten_years_ago = today - relativedelta(years=10) 
         
         if boat_license_select == "Licensed":
-            if boat_license_date < ten_years_ago:
+            if given_date < ten_years_ago:
                 st.write("The boat license is EXPIRED. More than 10 years old.")
 
         elif boat_license_select == "Registered":
-            if boat_license_date < three_years_ago:
-                st.write("The boat license is EXPIRED. More than 3 years old.")
+            if given_date < three_years_ago:
+                st.write("The boat registration is EXPIRED. More than 3 years old.")
+
 
     
-    # Top screen that never moves
-    #
-    col001, col002 = st.columns([1, 3])  # Adjust the ratio for spacing
+    #### APP DISPLAY #####
+
+
+    st.markdown("""
+    <style>
+    @media only screen and (max-width: 600px) {
+    .your-class { font-size: 14px; }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    required_select = {}
+    common_select = {}
+
+    # Initialize session state for active tab
+    if "active_tab" not in st.session_state:
+        st.session_state.active_tab = 0  # Start with the first tab (index 0)
+    
+    # Header
+    col001, col002 = st.columns([1, 2])  # Adjust the ratio for spacing
     with col001:
         st.image("CLI_Logo.png", width=150)
     with col002:
@@ -117,13 +120,22 @@ def main():
         
         # boat licensed? Registered? Are they up to date?
         boat_license_select = st.selectbox("Is boat licensed/registered? : ", options=["None", "Licensed", "Registered"], index=1, key="boat_license_select")
+        
+        # boat license date
+        this_year = datetime.date.today().year
         if boat_license_select != "None":
-            boat_license_date = st.date_input("Date boat last licensed/registered: ", value=None, key="boat_license_date")
+            col_m, col_y = st.columns([1,1])
+            with col_m:
+                #boat_license_date = st.date_input("Date boat last licensed/registered: ", value=None, key="boat_license_date")
+                boat_license_month = st.number_input("Month", min_value=1, max_value=12, value=None, key="boat_license_month")
+            with col_y:
+                boat_license_year = st.number_input("Year", min_value=1980, max_value=this_year, value=None, key="boat_license_year")
             # license lasts 10 years, registration lasts 3 years
-            if boat_license_date != None:
-                check_expired_license(boat_license_select, boat_license_date)
+            if boat_license_month != None and boat_license_year != None:
+                check_expired_license(boat_license_select, boat_license_month, boat_license_year)
         else:
-            boat_license_date= None
+            boat_license_month= None
+            boat_license_year = None
         
         # is there a motorized tender?
         tender_select = st.toggle("Is there a motorized tender?", value=False, key="tender_select")
@@ -157,7 +169,7 @@ def main():
             charts_date_select = None
         
 
-    # Diplay required safety devices and checkboxes
+    # REQUIRED SAFETY DEVICES
     with tabs[2]:
         #elif st.session_state.active_tab == 2:
         # is there a flare reduction?
