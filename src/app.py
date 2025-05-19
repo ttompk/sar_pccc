@@ -263,8 +263,7 @@ def main():
                             boat_length, 
                             boat_license_select, 
                             boat_lic_date, 
-                            tender_select, 
-                            competency_select)
+                            tender_select)
 
                         # OPTIONAL EQUIPMENT 
                         optional_eq = {
