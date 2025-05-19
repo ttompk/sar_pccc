@@ -21,7 +21,8 @@ def main():
             st.session_state["motor"] = True
             st.session_state["boat_length"] = 1
             st.session_state["boat_license_select"] = "None"
-            st.session_state["boat_license_date"] = None
+            st.session_state["boat_license_month"] = None
+            st.session_state["boat_license_year"] = None
             st.session_state["tender_select"] = False
             # optional
             st.session_state["radio_select"] = False
@@ -58,6 +59,7 @@ def main():
     def check_expired_license(boat_license_select, boat_license_month, boat_license_year):
         # Get today's date
         today = datetime.datetime.today()
+        # combine month and year into a date
         given_date = datetime.datetime(boat_license_year, boat_license_month, 1)
 
         three_years_ago = today - relativedelta(years=3)        
@@ -70,7 +72,8 @@ def main():
         elif boat_license_select == "Registered":
             if given_date < three_years_ago:
                 st.write("The boat registration is EXPIRED. More than 3 years old.")
-
+        
+        return given_date
 
     
     #### APP DISPLAY #####
@@ -133,7 +136,7 @@ def main():
                 boat_license_year = st.number_input("Year", min_value=1980, max_value=this_year, value=None, key="boat_license_year")
             # license lasts 10 years, registration lasts 3 years
             if boat_license_month != None and boat_license_year != None:
-                check_expired_license(boat_license_select, boat_license_month, boat_license_year)
+                boat_lic_date = check_expired_license(boat_license_select, boat_license_month, boat_license_year)
         else:
             boat_license_month= None
             boat_license_year = None
@@ -259,7 +262,7 @@ def main():
                             motor, 
                             boat_length, 
                             boat_license_select, 
-                            boat_license_date, 
+                            boat_lic_date, 
                             tender_select, 
                             competency_select)
 
