@@ -48,19 +48,19 @@ def create_pdf_with_letterhead(report_data):
     
     # Add table data (6 rows)
     elements.append(Paragraph("Vessel Information", body_style))
-    data = [
-        ["", "", ""],
-        ["Name", report_data["boat_name"], "10"],
-        ["Type", report_data["boat_type"], "5"],
-        ["Motorized?", (lambda x: "Yes" if x else "No")(report_data["motor"]), "3"],
-        ["Length (ft)", report_data["boat_length"], "7"],
-        ["Reg/Lic", report_data["boat_license_select"], "6"],
-        ["Lic. Date", report_data["boat_lic_date"].strftime("%Y-%d"), "4"],
-        ["Motorized Tender?", report_data["tender_select"], "2"]
+    boat_table = [
+        ["", ""],
+        ["Name", report_data["boat_name"]],
+        ["Type", report_data["boat_type"]],
+        ["Motorized?", (lambda x: "Yes" if x else "No")(report_data["motor"])],
+        ["Length (ft)", report_data["boat_length"]],
+        ["Reg/Lic", report_data["boat_license_select"]],
+        ["Lic. Date", report_data["boat_lic_date"].strftime("%Y-%d")],
+        ["Motorized Tender?", (lambda x: "Yes" if x else "No")(report_data["tender_select"])]
     ]
 
     # Create the table with styling
-    table = Table(data, hAlign="LEFT")
+    table = Table(boat_table, hAlign="LEFT")
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.lightblue),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
