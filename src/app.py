@@ -270,8 +270,10 @@ def main():
                         # add boat and retrieve the unique boat id from the database
                         boat_id = database.add_to_boat_table(boat_dict)
 
+                        # add the boat id to the boat dictionary for the report
                         boat_report_dict =  boat_dict.copy()
                         boat_report_dict["boat_id"] = boat_id
+                        
                         # OPTIONAL EQUIPMENT 
                         optional_eq = {
                                     "VHF Radio": radio_select, 
@@ -315,16 +317,7 @@ def main():
                             "co_select": co_select,
                             "operator_email": operator_email
                         }
-                        database.add_operator_info_to_db(
-                            boat_id, 
-                            inspection_id,
-                            competency_select, 
-                            roc_select, 
-                            hypo_select, 
-                            heave_select, 
-                            sailplan_select, 
-                            co_select,
-                            operator_email)
+                        database.add_operator_info_to_db(boat_id, inspection_id, operator_dict)
 
                         # CLEAN UP THE FORM
                         # if the report back from databse without errors then let user know and clean up the form
@@ -335,24 +328,24 @@ def main():
                     except:
                         st.error("Error adding information to the database. Please try again.")
                     
-                    try:
-                        # combine the report variables into one dictionary
-                        report_data = {
-                            "timestamp": datetime.datetime.today(),
-                            **inspect_dict,
-                            **boat_dict,
-                            **operator_dict,
-                            **common_select,
-                            **required_select
-                        }
-                        # create the pdf report
-                        pdf_report.create_pdf_with_letterhead(report_data)
-                        st.success("PDF Report Created!")
-                        time.sleep(3)
-                        # if it all works then reset the form
-                        #reset_state_values()
-                    except:
-                        st.error("Error creating PDF report. Please try again.")
+                    #try:
+                    # combine the report variables into one dictionary
+                    report_data = {
+                        "timestamp": datetime.datetime.today(),
+                        **inspect_dict,
+                        **boat_report_dict,
+                        **operator_dict,
+                        **common_select,
+                        **required_select
+                    }
+                    # create the pdf report
+                    pdf_report.create_pdf_with_letterhead(report_data)
+                    st.success("PDF Report Created!")
+                    time.sleep(3)
+                    # if it all works then reset the form
+                    #reset_state_values()
+                    #except:
+                    #    st.error("Error creating PDF report. Please try again.")
                     
                 else: 
                     st.error("Password Incorrect. Error saving information.")

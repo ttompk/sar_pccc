@@ -119,7 +119,7 @@ def add_safety_device(inspection_id, device_name, device_desr, is_present):
         session.close()
 
 
-def add_operator_info_to_db(boat_id, inspection_id, competency_select, roc_select, hypo_select, heave_select, sailplan_select, co_select,operator_email):
+def add_operator_info_to_db(boat_id, inspection_id, operator_dict):
     session = get_session()
     try:
         query = text("""
@@ -129,13 +129,13 @@ def add_operator_info_to_db(boat_id, inspection_id, competency_select, roc_selec
         session.execute(query, {
             "boat_id": boat_id,
             "inspection_id": inspection_id,
-            "competency_select": competency_select,
-            "roc_select": roc_select,
-            "hypo_select": hypo_select,
-            "heave_select": heave_select,
-            "sailplan_select": sailplan_select,
-            "co_select": co_select,
-            "operator_email": operator_email
+            "competency_select": operator_dict["competency_select"],
+            "roc_select": operator_dict["roc_select"],
+            "hypo_select": operator_dict["hypo_select"],
+            "heave_select": operator_dict["heave_select"],
+            "sailplan_select": operator_dict["sailplan_select"],
+            "co_select": operator_dict["co_select"],
+            "operator_email": operator_dict["operator_email"]
         })
         session.commit()
     except Exception as e:

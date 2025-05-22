@@ -4,7 +4,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
-def create_pdf_with_letterhead(timestamp, ):
+def create_pdf_with_letterhead(report_data):
     """
     Create a PDF report with a letterhead and a table of data.
     Args:
@@ -24,7 +24,11 @@ def create_pdf_with_letterhead(timestamp, ):
 
     # Add letterhead image (adjust size/position as needed)
     letterhead = Image("CLI_Logo.png", width=2.0*inch, height=1.0*inch)
-    title1 = Paragraph("Pleasure Craft Courtesy Check", subheader_style)
+    inspect= f"Inspection Report: {report_data['inspection_id']}"
+    title1 = Paragraph("Pleasure Craft Courtesy Check<br/><font size=8>"+inspect+"</font>", subheader_style)
+
+    #title1.alignment = 1  # Center alignment
+    #title2 = Paragraph(f"Inspection ID: {report_data['inspection_id']}", body_style)
     # Put them side-by-side in a table
     table_header = Table([[letterhead, title1]], colWidths=[150, 300])  # adjust widths as needed
     elements.append(table_header)
@@ -39,19 +43,20 @@ def create_pdf_with_letterhead(timestamp, ):
     # Add title
     #elements.append(Paragraph("Canadian Lifeboat Institution", title_style))
     elements.append(Spacer(1, 0.1 * inch))
-    elements.append(Paragraph("Report Date: " + timestamp.strftime("%B %d, %Y"), body_style))
+    elements.append(Paragraph("Report Date: " + report_data["timestamp"].strftime("%B %d, %Y"), body_style))
     elements.append(Spacer(1, 0.1 * inch))
     
     # Add table data (6 rows)
     elements.append(Paragraph("Vessel Information", body_style))
     data = [
         ["", "", ""],
-        ["Name", "Test", "10"],
-        ["Type", "Sail", "5"],
-        ["Length", "34", "7"],
-        ["", "Sweet Green Pears", "6"],
-        ["", "Seasonal Peaches", "4"],
-        ["", "Seedless Grapes", "8"],
+        ["Name", report_data["boat_name"], "10"],
+        ["Type", report_data["boat_type"], "5"],
+        ["Motorized?", (lambda x: "Yes" if x else "No")(report_data["motor"]), "3"],
+        ["Length (ft)", report_data["boat_length"], "7"],
+        ["Reg/Lic", report_data["boat_license_select"], "6"],
+        ["Lic. Date", report_data["boat_lic_date"].strftime("%Y-%d"), "4"],
+        ["Motorized Tender?", report_data["tender_select"], "2"]
     ]
 
     # Create the table with styling
