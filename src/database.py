@@ -23,7 +23,7 @@ def get_session():
 
 
 # add a boat to db
-def add_to_boat_table(boat_name, boat_type, motor, boat_length, boat_license_select, boat_license_date, tender_select):
+def add_to_boat_table(boat_dict):
     session = get_session()
     try: 
         query = text('''
@@ -32,13 +32,13 @@ def add_to_boat_table(boat_name, boat_type, motor, boat_length, boat_license_sel
                     RETURNING id;
                     ''')
         result = result = session.execute(query, {
-                "boat_name": boat_name,
-                "boat_type": boat_type,
-                "motor": motor,
-                "boat_length": boat_length,
-                "boat_license_select": boat_license_select,
-                "boat_license_date": boat_license_date,
-                "tender_select": tender_select
+                "boat_name": boat_dict["boat_name"],
+                "boat_type": boat_dict["boat_type"],
+                "motor": boat_dict["motor"],
+                "boat_length": boat_dict["boat_length"],
+                "boat_license_select": boat_dict["boat_license_select"],
+                "boat_license_date": boat_dict["boat_lic_date"],
+                "tender_select": boat_dict["tender_select"]
             })
         boat_id = result.scalar()  # Retrieve the returned ID
         session.commit()
