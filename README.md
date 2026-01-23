@@ -3,7 +3,7 @@
 This project is an application designed to aid users in performing pleasure craft courtesey checks for Canadian boats (also known as vessels). Courtesey checks are provided by qualified institutions (such a as the Candian Lifeboat Institution) on vessls to be sure the boat and operators comply with Transport Canada safety regulations. The app user inputs details about the vessel, confirms the presence of safety devices, and saves the inspection results to a database (if a member of the Canadian Lifeboat Institution). The general public is welcome to use the app but the results of the inspection will not be saved in the database and a report will not be sent to the boat operator.
 
 ## NOTE TO USERS:
-Transport Canada has specified that required safety devices be specific to vessel type and length overall. The app therefore only shows the required safety devices specific to that vessel's confirgutation. The app was built in April 2025 using the Transport Canada publication TP_511e which was published in 2019. Notably, a later update has acknowledged the use of electronic flares and their presence does reduce a certain number of required flares. This adjustment is not reflected in this version. 
+Transport Canada has specified that required safety devices be specific to vessel type and length overall. The app therefore only shows the required safety devices specific to that vessel's configuration. The app was built in April 2025 using the Transport Canada publication TP_511e which was published in 2019. Notably, a later update has acknowledged the use of electronic flares and their presence does reduce a certain number of required flares. This adjustment is not reflected in this version. 
 
 
 ## Project Structure
