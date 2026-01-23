@@ -62,15 +62,15 @@ def main():
         # combine month and year into a date
         given_date = datetime.datetime(boat_license_year, boat_license_month, 1)
 
-        three_years_ago = today - relativedelta(years=3)        
-        ten_years_ago = today - relativedelta(years=10) 
+        bregistration = today - relativedelta(years=3)        
+        blicense = today - relativedelta(years=5) 
         
         if boat_license_select == "Licensed":
-            if given_date < ten_years_ago:
-                st.write("The boat license is EXPIRED. More than 10 years old.")
+            if given_date < blicense:
+                st.write("The boat license is EXPIRED. More than 5 years old.")
 
         elif boat_license_select == "Registered":
-            if given_date < three_years_ago:
+            if given_date < bregistration:
                 st.write("The boat registration is EXPIRED. More than 3 years old.")
         
         return given_date
