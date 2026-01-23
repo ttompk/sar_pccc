@@ -1,1 +1,4 @@
 .env
+src/__pycache__/
+
+pdf_reports/
