@@ -57,7 +57,7 @@ streamlit-boat-inspection-app
    ```
    streamlit run src/app.py
    ```
-## CLound Implementation
+## Clound Implementation
 The app is being streamed on streamlit's cloud server here: https://sar-pccc.streamlit.app/ 
 The attached database is hosted on NeonDB: https://neon.com/
 
