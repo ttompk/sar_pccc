@@ -24,7 +24,7 @@ def heaving_line_length(boat_length):
 
 def compass_extra(boat_length): 
     if boat_length <= 26.247:   # 8m
-        return "[not required if less than 8m (26ft 3 in) and within sight of navigation marks]"
+        return "[not requi1red if less than 8m (26ft 3 in) and within sight of navigation marks]"
     else:
         return ''
 
